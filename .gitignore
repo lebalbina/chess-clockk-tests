@@ -1,6 +1,7 @@
 .gradle
-build/
-config.properties
+/build
+app/build/
+app/config.properties
 !gradle/wrapper/gradle-wrapper.jar
 
 ### IntelliJ IDEA ###
