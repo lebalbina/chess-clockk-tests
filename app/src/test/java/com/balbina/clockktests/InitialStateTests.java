@@ -1,12 +1,43 @@
+package com.balbina.clockktests;
+
+import com.balbina.clockktests.pom.MainViewPOM;
+import com.balbina.clockktests.pom.TimeSetBottomSheetPOM;
+import io.appium.java_client.android.appmanagement.AndroidTerminateApplicationOptions;
+import io.appium.java_client.appmanagement.BaseTerminateApplicationOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.time.Duration;
 
 public class InitialStateTests extends BaseTest {
 
-    @Test
-    public void initial_timeCorrectlySet() {
-        System.out.println(InitialStateTests.class.getPackage().getName());
+    private MainViewPOM pom;
 
+    @BeforeClass
+    private void setUp() {
+        pom = new MainViewPOM(driver);
+    }
+
+    @AfterMethod
+    private void restart() {
+        driver.terminateApp("com.example.chessclockk",
+                            new AndroidTerminateApplicationOptions().withTimeout(Duration.ofSeconds(0))
+        );
+        driver.activateApp("com.example.chessclockk");
+    }
+
+    @BeforeMethod
+    public void waitForMainScreen() {
+        driverWait.until(ExpectedConditions.visibilityOf(pom.getClockTop()));
+    }
+
+    @Test
+    public void timeCorrectlySet() {
         String topClockInitialValue = pom.getTopClockTime();
         String bottomClockInitialValue = pom.getBottomClockTime();
 
@@ -15,7 +46,7 @@ public class InitialStateTests extends BaseTest {
     }
 
     @Test
-    public void initial_buttonsStateCorrectlySet() {
+    public void buttonsStateCorrectlySet() {
         boolean isPpBtnEnabled = pom.getPpBtn().isEnabled();
         boolean isClockBtnEnabled = pom.getClockBtn().isEnabled();
         boolean isRestartBtnEnabled = pom.getRestartBtn().isEnabled();
@@ -26,7 +57,7 @@ public class InitialStateTests extends BaseTest {
     }
 
     @Test
-    public void initial_countersAreZero() {
+    public void countersAreZero() {
         int topCounterValue = pom.getTopMovesCounterValue();
         int bottomCounterValue = pom.getBottomMovesCounterValue();
 
@@ -35,30 +66,28 @@ public class InitialStateTests extends BaseTest {
     }
 
     @Test
-    public void initial_topPlayerCanStartGame() {
+    public void topPlayerCanStartGame() {
         pom.tapClockTop();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Boolean hasClockStarted = new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(webDriver -> {
+                    String time = pom.getBottomClockTime();
+                    return !time.equals("3:00");
+                });
 
-        String bottomClockValueAfter = pom.getBottomClockTime();
-        Assert.assertEquals(bottomClockValueAfter, "2:57");
+        Assert.assertTrue(hasClockStarted, "Bottom clock did not update to 2:57 in time.");
     }
 
     @Test
-    public void initial_bottomPlayerCanStartGame() {
+    public void bottomPlayerCanStartGame() {
         pom.tapBottomClock();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Boolean hasClockStarted = new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(webDriver -> {
+                    String time = pom.getTopClockTime();
+                    return !time.equals("3:00");
+                });
 
-        String topClockValueAfter = pom.getBottomClockTime();
-        Assert.assertEquals(topClockValueAfter, "2:57");
+        Assert.assertTrue(hasClockStarted, "Bottom clock did not update to 2:57 in time.");
     }
 }

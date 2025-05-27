@@ -1,4 +1,4 @@
-package com.balbina.clockktests;
+package com.balbina.clockktests.pom;
 
 import io.appium.java_client.AppiumBy;
 import org.openqa.selenium.By;

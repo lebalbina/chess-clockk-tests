@@ -1,2 +1,3 @@
 rootProject.name = 'ChessClockkTests'
+include(":app")
 

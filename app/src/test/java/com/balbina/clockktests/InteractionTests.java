@@ -1,20 +1,46 @@
+package com.balbina.clockktests;
+
+import com.balbina.clockktests.pom.MainViewPOM;
+import com.balbina.clockktests.pom.RestartDialogPOM;
+import com.balbina.clockktests.pom.TimeSetBottomSheetPOM;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class InteractionTests extends BaseTest {
 
-    private final RestartDialogPOM dialogPom = new RestartDialogPOM(driverWait);
-    private final TimeSetBottomSheetPOM sheetPOM = new TimeSetBottomSheetPOM(driverWait);
+    private RestartDialogPOM dialogPom;
+    private TimeSetBottomSheetPOM sheetPOM;
+    private MainViewPOM pom;
+    private TimeSetBottomSheetPOM timePom;
+
+    @BeforeClass
+    public void setUp() {
+        dialogPom = new RestartDialogPOM(driverWait);
+        sheetPOM = new TimeSetBottomSheetPOM(driverWait);
+        pom = new MainViewPOM(driver);
+        timePom = new TimeSetBottomSheetPOM(driverWait);
+    }
 
     @BeforeMethod
+    public void waitForMainScreen() {
+        driverWait.until(ExpectedConditions.visibilityOf(pom.getClockTop()));
+    }
+
+    @AfterMethod
     public void restartApp() {
+        if (driver.isKeyboardShown()) {
+            driver.hideKeyboard();
+        }
+
         if (pom.isRestartBtnEnabled()) {
             pom.getRestartBtn().click();
             dialogPom.getDialogRestartConfirmBtn().click();
+            driverWait.until(ExpectedConditions.visibilityOf(pom.getClockTop()));
         }
-        driverWait.until(ExpectedConditions.visibilityOf(pom.getClockTop()));
     }
 
     //region --- play pause interactions ---
@@ -79,6 +105,32 @@ public class InteractionTests extends BaseTest {
         Assert.assertTrue(pom.getClockBtn().isEnabled());
     }
 
+    @Test
+    public void openTimeSetDialog_keyboardShowsUp() {
+        pom.getClockBtn().click();
+        timePom.getHours().click();
+        boolean isKeyboardShown = driver.isKeyboardShown();
+        Assert.assertTrue(isKeyboardShown);
+    }
+
+    @Test
+    public void closeTimeSetDialog_keyboardHides() {
+        pom.getClockBtn().click();
+        timePom.getHours().click();
+        timePom.getDoneBtn().click();
+        boolean isKeyboardShown = driver.isKeyboardShown();
+        Assert.assertFalse(isKeyboardShown);
+    }
+
+    @Test
+    public void pressBackTimeSetDialog_keyboardHides() {
+        pom.getClockBtn().click();
+        timePom.getHours().click();
+        driver.navigate().back();
+        boolean isKeyboardShown = driver.isKeyboardShown();
+        Assert.assertFalse(isKeyboardShown);
+    }
+
     //endregion -- end
 
     //region --- restart interaction - no state validation ---
@@ -128,9 +180,9 @@ public class InteractionTests extends BaseTest {
 
     private void reachGameEnd() {
         pom.getClockBtn().click();
-        sheetPOM.getSheetSeconds().clear();
-        sheetPOM.getSheetSeconds().sendKeys("3");
-        sheetPOM.getDoneBtnSeconds().click();
+        sheetPOM.getSeconds().clear();
+        sheetPOM.getSeconds().sendKeys("3");
+        sheetPOM.getDoneBtn().click();
         pom.tapClockTop();
 
         driverWait.until(ExpectedConditions.visibilityOf(pom.getFlag()));

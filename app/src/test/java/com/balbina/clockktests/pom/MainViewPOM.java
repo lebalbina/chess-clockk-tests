@@ -1,4 +1,4 @@
-package com.balbina.clockktests;
+package com.balbina.clockktests.pom;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
@@ -46,7 +46,7 @@ public class MainViewPOM {
     @AndroidFindBy(uiAutomator = "new UiSelector().resourceId(\"clockTimeSetting\").instance(1)")
     private WebElement bottomTimeSetting;
 
-    @AndroidFindBy(uiAutomator = "new UiSelector().description(\"flag\")")
+    @AndroidFindBy(uiAutomator = "new UiSelector().resourceId(\"flag_icon\")")
     private WebElement flag;
 
     public void tapClockTop() {
@@ -65,8 +65,17 @@ public class MainViewPOM {
         return clockBottom.isEnabled();
     }
 
+    //TODO fix this usage
     public String getTopClockTime() {
         return clockTopCurrentTime.getText();
+    }
+
+    public WebElement getTopClockTimeElement() {
+        return clockTopCurrentTime;
+    }
+
+    public WebElement getBottomClockTimeElement() {
+        return clockBottomCurrentTime;
     }
 
     public String getBottomClockTime() {
@@ -130,8 +139,5 @@ public class MainViewPOM {
     public WebElement getFlag() {
         return flag;
     }
-
-//    public String getBottomClockTime() {
-//        return c
-//    }
 }
+

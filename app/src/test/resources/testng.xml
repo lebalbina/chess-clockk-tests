@@ -2,10 +2,11 @@
 <suite name="ChessClockk Test Suite" verbose="1" preserve-order="true">
     <test name="Ordered Tests">
         <classes>
-            <class name="com.balbina"/>
-            <class name="tests.InteractionTests"/>
-            <class name="tests.ResetFunctionalityTests"/>
-            <class name="tests.PerformanceTests"/>
+            <class name="com.balbina.clockktests.InitialStateTests"/>
+            <class name="com.balbina.clockktests.ResetTests"/>
+            <class name="com.balbina.clockktests.InteractionTests"/>
+            <class name="com.balbina.clockktests.TimeSetTests"/>
+            <class name="com.balbina.clockktests.AppStateTests"/>
         </classes>
     </test>
 </suite>

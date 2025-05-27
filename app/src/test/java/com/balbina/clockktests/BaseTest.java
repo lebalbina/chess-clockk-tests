@@ -1,7 +1,10 @@
-import io.appium.java_client.AppiumDriver;
+package com.balbina.clockktests;
+
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,13 +13,12 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Properties;
 
-public class BaseTest {
+public abstract class BaseTest {
     protected AndroidDriver driver;
     protected WebDriverWait driverWait;
-    protected MainViewPOM pom;
 
-
-    public BaseTest() {
+    @BeforeClass
+    public void setup() {
         Properties props = new Properties();
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             props.load(fis);
@@ -38,6 +40,13 @@ public class BaseTest {
         }
 
         driverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        pom = new MainViewPOM(driver);
+    }
+
+    @AfterClass
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
+

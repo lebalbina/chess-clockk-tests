@@ -25,12 +25,48 @@ tasks.register('printTestMethodNames') {
     doLast {
         URL[] urls = sourceSets.test.runtimeClasspath.files.collect { it.toURI().toURL() }
         def classLoader = new URLClassLoader(urls)
-        def clazz = classLoader.loadClass('ResetTests')
+        def clazz = classLoader.loadClass('com.balbina.clockktests.ResetTests')
         def testAnnotation = classLoader.loadClass('org.testng.annotations.Test') as Class<? extends Annotation>
 
         clazz.declaredMethods.each {
             if (it.isAnnotationPresent(testAnnotation)) {
                 println it.name
+            }
+        }
+    }
+}
+
+tasks.register('printClassAndItsTestMethodNames') {
+    doLast {
+        //iterate over compiled classes
+        def classesDirs = sourceSets.test.output.classesDirs
+        classesDirs.each { dir ->
+            dir.eachFileRecurse { file ->
+                if (file.name.endsWith("Tests.class")) {
+                    //prepare full class names
+                    def path = file.absolutePath - dir.absolutePath
+                    def className = path
+                            .replaceAll(/[\/\\]/, ".")
+                            .replaceAll(/\.class$/, "")
+                            .substring(1)
+                    println(className)
+
+                    //prepare URLs for ClassLoader
+                    def urls = sourceSets.test.runtimeClasspath.files.collect { it.toURI().toURL() } as URL[]
+                    def urlClassLoader = new URLClassLoader(urls)
+
+                    try {
+                        def loadedClass = urlClassLoader.loadClass(className)
+                        def annotationClass = urlClassLoader.loadClass("org.testng.annotations.Test") as Class<Annotation>
+                        loadedClass.declaredMethods.each {
+                            if (it.isAnnotationPresent(annotationClass)) {
+                                println("..." + it.name)
+                            }
+                        }
+
+                    } catch (Throwable t) {
+                    }
+                }
             }
         }
     }
