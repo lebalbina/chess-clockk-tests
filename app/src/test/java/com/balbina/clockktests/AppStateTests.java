@@ -33,11 +33,11 @@ public class AppStateTests extends BaseTest {
     private void restart() {
         ApplicationState state = driver.queryAppState(packageName);
         if (state == ApplicationState.RUNNING_IN_FOREGROUND) {
-            driver.terminateApp("com.example.chessclockk",
+            driver.terminateApp(packageName,
                                 new AndroidTerminateApplicationOptions().withTimeout(Duration.ofSeconds(0))
             );
         }
-        driver.activateApp("com.example.chessclockk");
+        driver.activateApp(packageName);
     }
 
     @Test

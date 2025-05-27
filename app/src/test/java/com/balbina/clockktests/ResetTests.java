@@ -40,7 +40,7 @@ public class ResetTests extends BaseTest {
     }
 
 
-    //TODO tthis test require restarted game
+    //TODO this test require restarted game
     @Test
     public void gameOn_restartDialogDismiss_doesNotResetGame() {
         pom.getClockTop().click();
@@ -54,7 +54,7 @@ public class ResetTests extends BaseTest {
         soft.assertTrue(pom.getPpBtn().isEnabled());
         soft.assertTrue(pom.getClockBtn().isEnabled());
         soft.assertTrue(pom.getRestartBtn().isEnabled());
-        //TODO diff than 0:05 rather that precise time or driverwait perhaps
+        //TODO driverwait perhaps
         soft.assertEquals(pom.getBottomClockTime(), "0:04");
         soft.assertEquals(pom.getTopClockTime(), "0:05");
         soft.assertAll();
@@ -63,7 +63,7 @@ public class ResetTests extends BaseTest {
     @Test()
     public void gameOn_restartDialog_backButtonPressed_doesNotResetGame() {
         pom.tapClockTop();
-        //TODO diff than 0:05 rather that precise time or driverwait perhaps
+        //TODO driverwait perhaps
         driverWait.until(ExpectedConditions.textToBePresentInElement(pom.getBottomClockTimeElement(), "0:04"));
         pom.getRestartBtn().click();
         driver.navigate().back();
