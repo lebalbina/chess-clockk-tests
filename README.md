@@ -11,12 +11,12 @@ Currently, tests run locally on emulator or device. The next step is integrating
 ```
 ChessClockkTests/
 ├── app/
-│   ├── src/test/
-│   │   ├── java/   
-│   │   └──resources/
-│   │      └── testng.xml  
+│   └── src/test/
+│       ├── java/   
+│       └── resources/
+│           └── testng.xml  
 ├── gradle/
-│   └── wrapper
+│   └── wrapper/
 │       ├── gradle-wrapper.jar
 │       └── gradle-wrapper.properties
 ├── .gitignore
