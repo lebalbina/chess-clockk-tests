@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout repo') {
             steps {
-                git branch: 'main', url: 'https://github.com/lebalbina/chess-clockk-tests'
+                checkout scm
             }
         }
 
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Execute tests') {
             script {
-                bat 'gradlew test'
+                bat 'gradlew clean test'
             }
         }
 
