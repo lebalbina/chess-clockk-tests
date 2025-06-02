@@ -4,7 +4,7 @@ This is an automated UI test project for my custom **Chess Clock app** for Andro
 
 It verifies the complete user experience and functionality of the app through both **end-to-end** and **functional** tests covering all interactive components.
 
-Currently, tests run locally on emulator or device. The next step is integrating with **local Jenkins** to enable triggered runs.
+CI/CD integration with Jenkins - Jenkinsfile included.
 
 ## 🗂️ Project Structure
 
@@ -23,6 +23,7 @@ ChessClockkTests/
 ├── gradlew
 ├── gradlew.bat
 ├── README.md
+├── Jenkinsfile
 └── settings.gradle
 ```
 
