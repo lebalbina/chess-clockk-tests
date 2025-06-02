@@ -18,10 +18,12 @@ dependencies {
 }
 
 test {
-    useTestNG()
-    reports {
-        junitXml.required.set(true)
-        html.required.set(true)
+    useTestNG() {
+        useDefaultListeners = true
+    }
+
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
     }
 }
 
