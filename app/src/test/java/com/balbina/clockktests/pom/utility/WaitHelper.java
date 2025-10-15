@@ -20,4 +20,10 @@ public class WaitHelper {
         return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(
                 ExpectedConditions.visibilityOfElementLocated(locator));
     }
+
+    public boolean waitUntilTextPresent(WebElement element, String text, long seconds) {
+        return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(
+                ExpectedConditions.textToBePresentInElement(element, text)
+        );
+    }
 }

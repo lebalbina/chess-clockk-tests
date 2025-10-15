@@ -3,13 +3,11 @@ package com.balbina.clockktests.pom;
 import com.balbina.clockktests.pom.utility.WaitHelper;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
-//TODO  refactor to method-based lookup
 public class MainViewPOM {
 
     private final WaitHelper helper;
@@ -44,11 +42,11 @@ public class MainViewPOM {
         helper = new WaitHelper(driver);
     }
 
-    public void tapClockTop() {
+    public void clickTopClock() {
         getClockTop().click();
     }
 
-    public void tapBottomClock() {
+    public void clickBottomClock() {
         getClockBottom().click();
     }
 
@@ -96,8 +94,32 @@ public class MainViewPOM {
         return helper.waitForElement(bottomTimeSettingLocator, 5).getText();
     }
 
+    public void clickRestartBtn() {
+        getRestartBtn().click();
+    }
+
+    public void clickPpBtn() {
+        getPpBtn().click();
+    }
+
+    public void clickClockBtn() {
+        getClockBtn().click();
+    }
+
     public WebElement getFlag() {
         return helper.waitForElement(flagLocator, 5);
+    }
+
+    public boolean isFlagVisible() {
+        return getFlag().isDisplayed();
+    }
+
+    public void processTopClockWait(String time) {
+        helper.waitUntilTextPresent(getClockTop(), time, 5);
+    }
+
+    public void processBottomClockWait(String time) {
+        helper.waitUntilTextPresent(getClockBottom(), time, 5);
     }
 
     private WebElement getClockTop() {
@@ -120,11 +142,11 @@ public class MainViewPOM {
         return helper.waitForElement(restartBtnLocator, 5);
     }
 
-
     private int parseMovesCount(String unformatted) {
         int index = unformatted.indexOf(':');
         String formatted = unformatted.substring(index + 2).trim();
         return Integer.parseInt(formatted);
     }
 }
+
 

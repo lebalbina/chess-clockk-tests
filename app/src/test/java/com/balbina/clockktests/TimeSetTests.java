@@ -78,7 +78,7 @@ public class TimeSetTests extends BaseTest {
 
     @Test
     public void setTimeTo0h0min0sec0bm0bs() {
-        pom.getClockBtn().click();
+        pom.clickClockBtn();
         timePom.getDoneBtn().click();
 
         WebElement toastView = driverWait.until(
@@ -90,7 +90,7 @@ public class TimeSetTests extends BaseTest {
 
     @Test
     public void noTimeEntered() {
-        pom.getClockBtn().click();
+        pom.clickClockBtn();
         timePom.getHours().clear();
         timePom.getMinutes().clear();
         timePom.getSeconds().clear();
@@ -121,7 +121,7 @@ public class TimeSetTests extends BaseTest {
     }
 
     private void enterTimeData(String hours, String minutes, String seconds, String bonusMinutes, String bonusSeconds) {
-        pom.getClockBtn().click();
+        pom.clickClockBtn();
         timePom.getHours().sendKeys(hours);
         timePom.getMinutes().sendKeys(minutes);
         timePom.getSeconds().sendKeys(seconds);
