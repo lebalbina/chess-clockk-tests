@@ -1,4 +1,4 @@
-package com.balbina.clockktests.pom.utility;
+package com.balbina.clockktests.utility;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,14 +16,19 @@ public class WaitHelper {
         this.driver = driver;
     }
 
-    public WebElement waitForElement(By locator, long seconds) {
+    public WebElement waitForElementVisibility(By locator, long seconds) {
         return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(
                 ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    public boolean waitUntilTextPresent(WebElement element, String text, long seconds) {
+    public WebElement waitForElementPresence(By locator, long seconds) {
         return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(
-                ExpectedConditions.textToBePresentInElement(element, text)
+                ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
+    public boolean waitUntilTextPresent(By locator, String text, long seconds) {
+        return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(
+                ExpectedConditions.textToBePresentInElementLocated(locator, text)
         );
     }
 }

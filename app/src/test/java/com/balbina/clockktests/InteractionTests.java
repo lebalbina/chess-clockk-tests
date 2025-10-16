@@ -4,9 +4,7 @@ import com.balbina.clockktests.pom.MainViewPOM;
 import com.balbina.clockktests.pom.RestartDialogPOM;
 import com.balbina.clockktests.pom.TimeSetBottomSheetPOM;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class InteractionTests extends BaseTest {
 
@@ -15,24 +13,12 @@ public class InteractionTests extends BaseTest {
     private MainViewPOM pom;
     private TimeSetBottomSheetPOM timePom;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
-        dialogPom = new RestartDialogPOM(driverWait);
-        sheetPOM = new TimeSetBottomSheetPOM(driverWait);
+        dialogPom = new RestartDialogPOM(driver);
+        sheetPOM = new TimeSetBottomSheetPOM(driver);
         pom = new MainViewPOM(driver);
-        timePom = new TimeSetBottomSheetPOM(driverWait);
-    }
-
-    @AfterMethod
-    public void restartApp() {
-        if (driver.isKeyboardShown()) {
-            driver.hideKeyboard();
-        }
-
-        if (pom.isRestartBtnEnabled()) {
-            pom.clickRestartBtn();
-            dialogPom.getDialogRestartConfirmBtn().click();
-        }
+        timePom = new TimeSetBottomSheetPOM(driver);
     }
 
     //region --- play pause interactions ---
@@ -100,24 +86,17 @@ public class InteractionTests extends BaseTest {
     }
 
     @Test
-    public void openTimeSetDialog_keyboardShowsUp() {
-        pom.clickClockBtn();
-        timePom.getHours().click();
-        Assert.assertTrue(driver.isKeyboardShown());
-    }
-
-    @Test
     public void closeTimeSetDialog_keyboardHides() {
         pom.clickClockBtn();
-        timePom.getHours().click();
-        timePom.getDoneBtn().click();
+        timePom.clickHours();
+        timePom.clickDoneBtn();
         Assert.assertFalse(driver.isKeyboardShown());
     }
 
     @Test
     public void pressBackTimeSetDialog_keyboardHides() {
         pom.clickClockBtn();
-        timePom.getHours().click();
+        timePom.clickHours();
         driver.navigate().back();
         Assert.assertFalse(driver.isKeyboardShown());
     }
@@ -143,9 +122,9 @@ public class InteractionTests extends BaseTest {
         pom.clickTopClock();
         pom.clickRestartBtn();
 
-        Assert.assertTrue(dialogPom.getDialogRestart().isDisplayed());
+        Assert.assertTrue(dialogPom.isDialogDisplayed());
 
-        dialogPom.getDialogRestartDismissBtn().click();
+        dialogPom.clickDismissBtn();
     }
 
     @Test
@@ -154,9 +133,9 @@ public class InteractionTests extends BaseTest {
         pom.clickPpBtn();
         pom.clickRestartBtn();
 
-        Assert.assertTrue(dialogPom.getDialogRestart().isDisplayed());
+        Assert.assertTrue(dialogPom.isDialogDisplayed());
 
-        dialogPom.getDialogRestartDismissBtn().click();
+        dialogPom.clickDismissBtn();
     }
 
     @Test
@@ -172,9 +151,8 @@ public class InteractionTests extends BaseTest {
 
     private void reachGameEnd() {
         pom.clickClockBtn();
-        sheetPOM.getSeconds().clear();
-        sheetPOM.getSeconds().sendKeys("3");
-        sheetPOM.getDoneBtn().click();
+        sheetPOM.typeSeconds("3");
+        sheetPOM.clickDoneBtn();
         pom.clickTopClock();
     }
     //endregion

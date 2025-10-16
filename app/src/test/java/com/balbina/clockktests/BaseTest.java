@@ -1,52 +1,49 @@
 package com.balbina.clockktests;
 
+import com.balbina.clockktests.utility.ConfigProvider;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Duration;
-import java.util.Properties;
 
 public abstract class BaseTest {
     protected AndroidDriver driver;
-    protected WebDriverWait driverWait;
+    protected final String packageName = "com.example.chessclockk";
 
-    @BeforeClass
+    @BeforeMethod
     public void setup() {
-        Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream("config.properties")) {
-            props.load(fis);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load config.properties", e);
-        }
-
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability("platformName", props.getProperty("PLATFORM_NAME"));
-        caps.setCapability("appium:deviceName", props.getProperty("DEVICE_NAME"));
-        caps.setCapability("appium:appPackage", props.getProperty("APP_PACKAGE"));
-        caps.setCapability("appium:appActivity", props.getProperty("APP_ACTIVITY"));
-        caps.setCapability("appium:automationName", props.getProperty("AUTOMATION_NAME"));
-
         try {
-            driver = new AndroidDriver(new URL(props.getProperty("APPIUM_SERVER_URL")), caps);
-        } catch (MalformedURLException e) {
+            driver = new AndroidDriver(getAppiumServerUrl(), getDesiredCapabilities());
+        } catch (URISyntaxException | MalformedURLException e) {
             throw new RuntimeException(e);
         }
-
-        driverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
         if (driver != null) {
             driver.quit();
         }
     }
+
+    private DesiredCapabilities getDesiredCapabilities() {
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability("platformName", ConfigProvider.getProperty("PLATFORM_NAME"));
+        caps.setCapability("appium:deviceName", ConfigProvider.getProperty("DEVICE_NAME"));
+        caps.setCapability("appium:appPackage", ConfigProvider.getProperty("APP_PACKAGE"));
+        caps.setCapability("appium:appActivity", ConfigProvider.getProperty("APP_ACTIVITY"));
+        caps.setCapability("appium:automationName", ConfigProvider.getProperty("AUTOMATION_NAME"));
+        return caps;
+    }
+
+    private URL getAppiumServerUrl() throws MalformedURLException, URISyntaxException {
+        return new URI(ConfigProvider.getProperty("APPIUM_SERVER_URL")).toURL();
+    }
 }
+
 

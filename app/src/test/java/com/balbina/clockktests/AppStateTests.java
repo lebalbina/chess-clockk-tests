@@ -6,28 +6,22 @@ import io.appium.java_client.android.appmanagement.AndroidTerminateApplicationOp
 import io.appium.java_client.appmanagement.ApplicationState;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
 
 public class AppStateTests extends BaseTest {
 
-    private final String packageName = "com.example.chessclockk";
     private MainViewPOM pom;
 
-    //TODO time setting logic should be extracted
-    @BeforeClass
+    @BeforeMethod
     private void setUp() {
         pom = new MainViewPOM(driver);
-        TimeSetBottomSheetPOM sheetPOM = new TimeSetBottomSheetPOM(driverWait);
-
+        TimeSetBottomSheetPOM sheetPOM = new TimeSetBottomSheetPOM(driver);
         pom.clickClockBtn();
-
-        //TODO refactor
-        sheetPOM.getSeconds().clear();
-        sheetPOM.getSeconds().sendKeys("5");
-        sheetPOM.getDoneBtn().click();
+        sheetPOM.typeSeconds("5");
+        sheetPOM.clickDoneBtn();
     }
 
     @AfterMethod

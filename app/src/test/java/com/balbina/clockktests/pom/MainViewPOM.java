@@ -1,12 +1,10 @@
 package com.balbina.clockktests.pom;
 
-import com.balbina.clockktests.pom.utility.WaitHelper;
+import com.balbina.clockktests.utility.WaitHelper;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.PageFactory;
 
 public class MainViewPOM {
 
@@ -38,7 +36,6 @@ public class MainViewPOM {
             "new UiSelector().resourceId(\"flag_icon\")");
 
     public MainViewPOM(AppiumDriver driver) {
-        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
         helper = new WaitHelper(driver);
     }
 
@@ -59,11 +56,11 @@ public class MainViewPOM {
     }
 
     public String getTopClockTime() {
-        return helper.waitForElement(clockTopCurrentTimeLocator, 5).getText();
+        return helper.waitForElementVisibility(clockTopCurrentTimeLocator, 5).getText();
     }
 
     public String getBottomClockTime() {
-        return helper.waitForElement(clockBottomCurrentTimeLocator, 5).getText();
+        return helper.waitForElementVisibility(clockBottomCurrentTimeLocator, 5).getText();
     }
 
     public Boolean isPpBtnEnabled() {
@@ -79,19 +76,19 @@ public class MainViewPOM {
     }
 
     public int getTopMovesCounterValue() {
-        return parseMovesCount(helper.waitForElement(topCounterLocator, 5).getText());
+        return parseMovesCount(helper.waitForElementVisibility(topCounterLocator, 5).getText());
     }
 
     public int getBottomMovesCounterValue() {
-        return parseMovesCount(helper.waitForElement(bottomCounterLocator, 5).getText());
+        return parseMovesCount(helper.waitForElementVisibility(bottomCounterLocator, 5).getText());
     }
 
     public String getTopTimeSetting() {
-        return helper.waitForElement(topTimeSettingLocator, 5).getText();
+        return helper.waitForElementVisibility(topTimeSettingLocator, 5).getText();
     }
 
     public String getBottomTimeSetting() {
-        return helper.waitForElement(bottomTimeSettingLocator, 5).getText();
+        return helper.waitForElementVisibility(bottomTimeSettingLocator, 5).getText();
     }
 
     public void clickRestartBtn() {
@@ -107,7 +104,7 @@ public class MainViewPOM {
     }
 
     public WebElement getFlag() {
-        return helper.waitForElement(flagLocator, 5);
+        return helper.waitForElementVisibility(flagLocator, 5);
     }
 
     public boolean isFlagVisible() {
@@ -115,31 +112,31 @@ public class MainViewPOM {
     }
 
     public void processTopClockWait(String time) {
-        helper.waitUntilTextPresent(getClockTop(), time, 5);
+        helper.waitUntilTextPresent(clockTopCurrentTimeLocator, time, 5);
     }
 
     public void processBottomClockWait(String time) {
-        helper.waitUntilTextPresent(getClockBottom(), time, 5);
+        helper.waitUntilTextPresent(clockBottomCurrentTimeLocator, time, 5);
     }
 
     private WebElement getClockTop() {
-        return helper.waitForElement(clockTopLocator, 5);
+        return helper.waitForElementVisibility(clockTopLocator, 5);
     }
 
     private WebElement getClockBottom() {
-        return helper.waitForElement(clockBottomLocator, 5);
+        return helper.waitForElementVisibility(clockBottomLocator, 5);
     }
 
     private WebElement getPpBtn() {
-        return helper.waitForElement(ppBtnLocator, 5);
+        return helper.waitForElementVisibility(ppBtnLocator, 5);
     }
 
     private WebElement getClockBtn() {
-        return helper.waitForElement(clockBtnLocator, 5);
+        return helper.waitForElementVisibility(clockBtnLocator, 5);
     }
 
     private WebElement getRestartBtn() {
-        return helper.waitForElement(restartBtnLocator, 5);
+        return helper.waitForElementVisibility(restartBtnLocator, 5);
     }
 
     private int parseMovesCount(String unformatted) {

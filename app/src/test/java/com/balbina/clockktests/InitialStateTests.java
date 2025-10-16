@@ -4,7 +4,7 @@ import com.balbina.clockktests.pom.MainViewPOM;
 import io.appium.java_client.android.appmanagement.AndroidTerminateApplicationOptions;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
@@ -13,7 +13,7 @@ public class InitialStateTests extends BaseTest {
 
     private MainViewPOM pom;
 
-    @BeforeClass
+    @BeforeMethod
     private void setUp() {
         pom = new MainViewPOM(driver);
     }
