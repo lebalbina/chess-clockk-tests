@@ -1,12 +1,10 @@
 package com.balbina.clockktests;
 
 import com.balbina.clockktests.pom.MainViewPOM;
+import com.balbina.clockktests.pom.SystemPOM;
 import com.balbina.clockktests.pom.TimeSetBottomSheetPOM;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -15,11 +13,13 @@ public class TimeSetTests extends BaseTest {
 
     private MainViewPOM pom;
     private TimeSetBottomSheetPOM timePom;
+    private SystemPOM systemPOM;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
         pom = new MainViewPOM(driver);
-        timePom = new TimeSetBottomSheetPOM(driverWait);
+        timePom = new TimeSetBottomSheetPOM(driver);
+        systemPOM = new SystemPOM(driver);
     }
 
     @DataProvider(name = "validTimes")
@@ -78,30 +78,17 @@ public class TimeSetTests extends BaseTest {
 
     @Test
     public void setTimeTo0h0min0sec0bm0bs() {
-        pom.getClockBtn().click();
-        timePom.getDoneBtn().click();
-
-        WebElement toastView = driverWait.until(
-                ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.Toast")));
-        String toastMessage = toastView.getText();
-
-        Assert.assertEquals(toastMessage, "Please specify valid time");
+        pom.clickClockBtn();
+        timePom.clickDoneBtn();
+        Assert.assertEquals(systemPOM.getToastMessage(), "Please specify valid time");
     }
 
     @Test
     public void noTimeEntered() {
-        pom.getClockBtn().click();
-        timePom.getHours().clear();
-        timePom.getMinutes().clear();
-        timePom.getSeconds().clear();
-        timePom.getMinutesBonus().clear();
-        timePom.getSecondsBonus().clear();
-        timePom.getDoneBtn().click();
-
-        WebElement toastView = driverWait.until(
-                ExpectedConditions.presenceOfElementLocated(By.xpath("//android.widget.Toast")));
-        String toastMessage = toastView.getText();
-        Assert.assertEquals(toastMessage, "Please specify valid time");
+        pom.clickClockBtn();
+        timePom.clearAll();
+        timePom.clickDoneBtn();
+        Assert.assertEquals(systemPOM.getToastMessage(), "Please specify valid time");
     }
 
     private void runTimeSettingSuccessTest(String hours,
@@ -121,13 +108,13 @@ public class TimeSetTests extends BaseTest {
     }
 
     private void enterTimeData(String hours, String minutes, String seconds, String bonusMinutes, String bonusSeconds) {
-        pom.getClockBtn().click();
-        timePom.getHours().sendKeys(hours);
-        timePom.getMinutes().sendKeys(minutes);
-        timePom.getSeconds().sendKeys(seconds);
-        timePom.getMinutesBonus().sendKeys(bonusMinutes);
-        timePom.getSecondsBonus().sendKeys(bonusSeconds);
-        timePom.getDoneBtn().click();
+        pom.clickClockBtn();
+        timePom.typeHours(hours);
+        timePom.typeMinutes(minutes);
+        timePom.typeSeconds(seconds);
+        timePom.typeMinutesBonus(bonusMinutes);
+        timePom.typeSecondsBonus(bonusSeconds);
+        timePom.clickDoneBtn();
     }
 }
 

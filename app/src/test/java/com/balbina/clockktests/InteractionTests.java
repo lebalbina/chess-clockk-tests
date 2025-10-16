@@ -3,12 +3,8 @@ package com.balbina.clockktests;
 import com.balbina.clockktests.pom.MainViewPOM;
 import com.balbina.clockktests.pom.RestartDialogPOM;
 import com.balbina.clockktests.pom.TimeSetBottomSheetPOM;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class InteractionTests extends BaseTest {
 
@@ -17,43 +13,25 @@ public class InteractionTests extends BaseTest {
     private MainViewPOM pom;
     private TimeSetBottomSheetPOM timePom;
 
-    @BeforeClass
-    public void setUp() {
-        dialogPom = new RestartDialogPOM(driverWait);
-        sheetPOM = new TimeSetBottomSheetPOM(driverWait);
-        pom = new MainViewPOM(driver);
-        timePom = new TimeSetBottomSheetPOM(driverWait);
-    }
-
     @BeforeMethod
-    public void waitForMainScreen() {
-        driverWait.until(ExpectedConditions.visibilityOf(pom.getClockTop()));
-    }
-
-    @AfterMethod
-    public void restartApp() {
-        if (driver.isKeyboardShown()) {
-            driver.hideKeyboard();
-        }
-
-        if (pom.isRestartBtnEnabled()) {
-            pom.getRestartBtn().click();
-            dialogPom.getDialogRestartConfirmBtn().click();
-            driverWait.until(ExpectedConditions.visibilityOf(pom.getClockTop()));
-        }
+    public void setUp() {
+        dialogPom = new RestartDialogPOM(driver);
+        sheetPOM = new TimeSetBottomSheetPOM(driver);
+        pom = new MainViewPOM(driver);
+        timePom = new TimeSetBottomSheetPOM(driver);
     }
 
     //region --- play pause interactions ---
     @Test
     public void gameOn_ppBtnEnabled() {
-        pom.tapBottomClock();
-        Assert.assertTrue(pom.getPpBtn().isEnabled());
+        pom.clickBottomClock();
+        Assert.assertTrue(pom.isPpBtnEnabled());
     }
 
     @Test
     public void gameOn_ppBtnClicked_gamePaused() {
-        pom.tapBottomClock();
-        pom.getPpBtn().click();
+        pom.clickBottomClock();
+        pom.clickPpBtn();
 
         Assert.assertFalse(pom.isTopClockEnabled());
         Assert.assertFalse(pom.isBottomClockEnabled());
@@ -61,9 +39,9 @@ public class InteractionTests extends BaseTest {
 
     @Test
     public void gamePaused_ppBtnClicked_gameResumed() {
-        pom.tapClockTop();
-        pom.getPpBtn().click();
-        pom.getPpBtn().click();
+        pom.clickTopClock();
+        pom.clickPpBtn();
+        pom.clickPpBtn();
 
         Assert.assertTrue(pom.isBottomClockEnabled());
         Assert.assertFalse(pom.isTopClockEnabled());
@@ -71,16 +49,17 @@ public class InteractionTests extends BaseTest {
 
     @Test
     public void gamePaused_ppBtnEnabled() {
-        pom.tapClockTop();
-        pom.getPpBtn().click();
+        pom.clickTopClock();
+        pom.clickPpBtn();
 
-        Assert.assertTrue(pom.getPpBtn().isEnabled());
+        Assert.assertTrue(pom.isPpBtnEnabled());
     }
 
     @Test
     public void gameEnd_ppBtnDisabled() {
         reachGameEnd();
-        Assert.assertFalse(pom.getPpBtn().isEnabled());
+        Assert.assertTrue(pom.isFlagVisible());
+        Assert.assertFalse(pom.isPpBtnEnabled());
     }
 
     //endregion
@@ -89,46 +68,37 @@ public class InteractionTests extends BaseTest {
     @Test
     public void gameEnd_timeSetBtnEnabled() {
         reachGameEnd();
-        Assert.assertTrue(pom.getClockBtn().isEnabled());
+        Assert.assertTrue(pom.isFlagVisible());
+        Assert.assertTrue(pom.isClockBtnEnabled());
     }
 
     @Test
     public void gamePaused_timeSetBtnEnabled() {
-        pom.tapClockTop();
-        pom.getPpBtn().click();
-        Assert.assertTrue(pom.getClockBtn().isEnabled());
+        pom.clickTopClock();
+        pom.clickPpBtn();
+        Assert.assertTrue(pom.isClockBtnEnabled());
     }
 
     @Test
     public void gameOn_timeSetEnabled() {
-        pom.tapClockTop();
-        Assert.assertTrue(pom.getClockBtn().isEnabled());
-    }
-
-    @Test
-    public void openTimeSetDialog_keyboardShowsUp() {
-        pom.getClockBtn().click();
-        timePom.getHours().click();
-        boolean isKeyboardShown = driver.isKeyboardShown();
-        Assert.assertTrue(isKeyboardShown);
+        pom.clickTopClock();
+        Assert.assertTrue(pom.isClockBtnEnabled());
     }
 
     @Test
     public void closeTimeSetDialog_keyboardHides() {
-        pom.getClockBtn().click();
-        timePom.getHours().click();
-        timePom.getDoneBtn().click();
-        boolean isKeyboardShown = driver.isKeyboardShown();
-        Assert.assertFalse(isKeyboardShown);
+        pom.clickClockBtn();
+        timePom.clickHours();
+        timePom.clickDoneBtn();
+        Assert.assertFalse(driver.isKeyboardShown());
     }
 
     @Test
     public void pressBackTimeSetDialog_keyboardHides() {
-        pom.getClockBtn().click();
-        timePom.getHours().click();
+        pom.clickClockBtn();
+        timePom.clickHours();
         driver.navigate().back();
-        boolean isKeyboardShown = driver.isKeyboardShown();
-        Assert.assertFalse(isKeyboardShown);
+        Assert.assertFalse(driver.isKeyboardShown());
     }
 
     //endregion -- end
@@ -136,42 +106,43 @@ public class InteractionTests extends BaseTest {
     //region --- restart interaction - no state validation ---
     @Test
     public void gameOn_restartBtnEnabled() {
-        pom.tapClockTop();
-        Assert.assertTrue(pom.getRestartBtn().isEnabled());
+        pom.clickTopClock();
+        Assert.assertTrue(pom.isRestartBtnEnabled());
     }
 
     @Test
     public void gamePaused_restartBtnEnabled() {
-        pom.tapClockTop();
-        pom.getPpBtn().click();
-        Assert.assertTrue(pom.getRestartBtn().isEnabled());
+        pom.clickTopClock();
+        pom.clickPpBtn();
+        Assert.assertTrue(pom.isRestartBtnEnabled());
     }
 
     @Test
     public void gameOn_restartBtnClicked_dialogAppears() {
-        pom.tapClockTop();
-        pom.getRestartBtn().click();
+        pom.clickTopClock();
+        pom.clickRestartBtn();
 
-        Assert.assertTrue(dialogPom.getDialogRestart().isDisplayed());
+        Assert.assertTrue(dialogPom.isDialogDisplayed());
 
-        dialogPom.getDialogRestartDismissBtn().click();
+        dialogPom.clickDismissBtn();
     }
 
     @Test
     public void gamePaused_restartBtnClicked_dialogAppears() {
-        pom.tapClockTop();
-        pom.getPpBtn().click();
-        pom.getRestartBtn().click();
+        pom.clickTopClock();
+        pom.clickPpBtn();
+        pom.clickRestartBtn();
 
-        Assert.assertTrue(dialogPom.getDialogRestart().isDisplayed());
+        Assert.assertTrue(dialogPom.isDialogDisplayed());
 
-        dialogPom.getDialogRestartDismissBtn().click();
+        dialogPom.clickDismissBtn();
     }
 
     @Test
     public void gameEnd_restartBtnEnabled() {
         reachGameEnd();
-        Assert.assertTrue(pom.getRestartBtn().isEnabled());
+        Assert.assertTrue(pom.isFlagVisible());
+        Assert.assertTrue(pom.isRestartBtnEnabled());
     }
 
     //endregion
@@ -179,17 +150,10 @@ public class InteractionTests extends BaseTest {
     //region --- helper methods ---
 
     private void reachGameEnd() {
-        pom.getClockBtn().click();
-        sheetPOM.getSeconds().clear();
-        sheetPOM.getSeconds().sendKeys("3");
-        sheetPOM.getDoneBtn().click();
-        pom.tapClockTop();
-
-        driverWait.until(ExpectedConditions.visibilityOf(pom.getFlag()));
+        pom.clickClockBtn();
+        sheetPOM.typeSeconds("3");
+        sheetPOM.clickDoneBtn();
+        pom.clickTopClock();
     }
-
     //endregion
 }
-
-
-

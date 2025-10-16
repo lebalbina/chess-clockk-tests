@@ -1,47 +1,40 @@
 package com.balbina.clockktests.pom;
 
+import com.balbina.clockktests.utility.WaitHelper;
 import io.appium.java_client.AppiumBy;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.WebDriver;
 
 public class RestartDialogPOM {
 
-    private final WebDriverWait driverWait;
+    private final WaitHelper helper;
 
-    public RestartDialogPOM(WebDriverWait driverWait) {
-        this.driverWait = driverWait;
+    public RestartDialogPOM(WebDriver driver) {
+        helper = new WaitHelper(driver);
     }
 
     private final By dialogRestartLocator = AppiumBy.androidUIAutomator(
             "new UiSelector().resourceId(\"dialog_restart\")");
-    public WebElement getDialogRestart() {
-        return driverWait.until(ExpectedConditions.visibilityOfElementLocated(dialogRestartLocator));
-    }
-
     private final By dialogRestartTitleLocator = AppiumBy.androidUIAutomator(
             "new UiSelector().resourceId(\"dialog_title\")");
-    public WebElement getDialogRestartTitle() {
-        return driverWait.until(ExpectedConditions.visibilityOfElementLocated(dialogRestartTitleLocator));
-    }
-
     private final By dialogRestartTextLocator = AppiumBy.androidUIAutomator(
             "new UiSelector().resourceId(\"dialog_text\")");
-    public WebElement getDialogRestartText() {
-        return driverWait.until(ExpectedConditions.visibilityOfElementLocated(dialogRestartTextLocator));
-    }
-
     private final By dialogRestartDismissBtnLocator = AppiumBy.androidUIAutomator(
             "new UiSelector().resourceId(\"dialog_restart_dismiss\")");
-    public WebElement getDialogRestartDismissBtn() {
-        return driverWait.until(ExpectedConditions.visibilityOfElementLocated(dialogRestartDismissBtnLocator));
-    }
-
     private final By dialogRestartConfirmBtnLocator = AppiumBy.androidUIAutomator(
             "new UiSelector().resourceId(\"dialog_restart_confirm\")");
-    public WebElement getDialogRestartConfirmBtn() {
-        return driverWait.until(ExpectedConditions.visibilityOfElementLocated(dialogRestartConfirmBtnLocator));
+
+    public boolean isDialogDisplayed() {
+        return helper.waitForElementVisibility(dialogRestartLocator, 5).isDisplayed();
+    }
+
+    public void clickDismissBtn() {
+        helper.waitForElementVisibility(dialogRestartDismissBtnLocator, 5).click();
+    }
+
+    public void clickConfirmBtn() {
+        helper.waitForElementVisibility(dialogRestartConfirmBtnLocator, 5).click();
     }
 }
+
 

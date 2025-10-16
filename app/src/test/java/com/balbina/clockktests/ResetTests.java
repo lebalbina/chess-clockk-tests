@@ -3,9 +3,8 @@ package com.balbina.clockktests;
 import com.balbina.clockktests.pom.MainViewPOM;
 import com.balbina.clockktests.pom.RestartDialogPOM;
 import com.balbina.clockktests.pom.TimeSetBottomSheetPOM;
-import io.appium.java_client.AppiumBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.annotations.BeforeClass;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -13,129 +12,122 @@ public class ResetTests extends BaseTest {
 
     private RestartDialogPOM dialogPom;
     private MainViewPOM pom;
+    private TimeSetBottomSheetPOM timeSheetPom;
 
-    @BeforeClass
-    public void setUpTime() {
+    @BeforeMethod
+    public void setUp() {
         pom = new MainViewPOM(driver);
-        dialogPom  = new RestartDialogPOM(driverWait);
-        TimeSetBottomSheetPOM sheetPOM = new TimeSetBottomSheetPOM(driverWait);
-
-        driverWait.until(ExpectedConditions.visibilityOf(pom.getClockBtn()));
-
-        pom.getClockBtn().click();
-        sheetPOM.getSeconds().clear();
-        sheetPOM.getSeconds().sendKeys("5");
-        sheetPOM.getDoneBtn().click();
+        dialogPom  = new RestartDialogPOM(driver);
+        timeSheetPom = new TimeSetBottomSheetPOM(driver);
     }
 
     //region gameOn
+
     @Test
     public void gameOn_resetGame() {
+        setGameTimeTo5Seconds();
         startAndRunGame();
-
-        pom.getRestartBtn().click();
-        dialogPom.getDialogRestartConfirmBtn().click();
-
+        pom.clickRestartBtn();
+        dialogPom.clickConfirmBtn();
         assertGameIsRestarted();
     }
 
-
-    //TODO this test require restarted game
     @Test
     public void gameOn_restartDialogDismiss_doesNotResetGame() {
-        pom.getClockTop().click();
-        driverWait.until(ExpectedConditions.textToBePresentInElement(pom.getBottomClockTimeElement(), "0:04"));
-        pom.getRestartBtn().click();
-        dialogPom.getDialogRestartDismissBtn().click();
+        setGameTimeTo5Seconds();
+        pom.clickTopClock();
+        pom.processBottomClockWait("0:04");
+        pom.clickRestartBtn();
+        dialogPom.clickDismissBtn();
 
         SoftAssert soft = new SoftAssert();
         soft.assertFalse(pom.isTopClockEnabled());
         soft.assertFalse(pom.isBottomClockEnabled());
-        soft.assertTrue(pom.getPpBtn().isEnabled());
-        soft.assertTrue(pom.getClockBtn().isEnabled());
-        soft.assertTrue(pom.getRestartBtn().isEnabled());
-        //TODO driverwait perhaps
+        soft.assertTrue(pom.isPpBtnEnabled());
+        soft.assertTrue(pom.isClockBtnEnabled());
+        soft.assertTrue(pom.isRestartBtnEnabled());
         soft.assertEquals(pom.getBottomClockTime(), "0:04");
         soft.assertEquals(pom.getTopClockTime(), "0:05");
         soft.assertAll();
     }
-
     @Test()
     public void gameOn_restartDialog_backButtonPressed_doesNotResetGame() {
-        pom.tapClockTop();
-        //TODO driverwait perhaps
-        driverWait.until(ExpectedConditions.textToBePresentInElement(pom.getBottomClockTimeElement(), "0:04"));
-        pom.getRestartBtn().click();
+        setGameTimeTo5Seconds();
+        pom.clickTopClock();
+        pom.processBottomClockWait("0:04");
+        pom.clickRestartBtn();
         driver.navigate().back();
 
         SoftAssert soft = new SoftAssert();
         soft.assertFalse(pom.isTopClockEnabled());
         soft.assertFalse(pom.isBottomClockEnabled());
-        soft.assertTrue(pom.getPpBtn().isEnabled());
-        soft.assertTrue(pom.getClockBtn().isEnabled());
-        soft.assertTrue(pom.getRestartBtn().isEnabled());
+        soft.assertTrue(pom.isPpBtnEnabled());
+        soft.assertTrue(pom.isClockBtnEnabled());
+        soft.assertTrue(pom.isRestartBtnEnabled());
         soft.assertEquals(pom.getBottomClockTime(), "0:04");
         soft.assertEquals(pom.getTopClockTime(), "0:05");
         soft.assertAll();
     }
-    //endregion
 
+    //endregion
     //region gamePaused
+
     @Test
     public void gamePaused_resetGame() {
+        setGameTimeTo5Seconds();
         startAndRunGame();
 
-        pom.getPpBtn().click();
-        pom.getRestartBtn().click();
-        dialogPom.getDialogRestartConfirmBtn().click();
+        pom.clickPpBtn();
+        pom.clickRestartBtn();
+        dialogPom.clickConfirmBtn();
 
         assertGameIsRestarted();
     }
     //endregion
-
     //region gameEnd
+
     @Test
     public void gameEnd_resetGame() {
+        setGameTimeTo5Seconds();
         startAndRunGame();
 
-        driverWait.until(ExpectedConditions.visibilityOf(pom.getFlag()));
-
-        pom.getRestartBtn().click();
-        dialogPom.getDialogRestartConfirmBtn().click();
+        Assert.assertTrue(pom.isFlagVisible());
+        pom.clickRestartBtn();
+        dialogPom.clickConfirmBtn();
 
         assertGameIsRestarted();
     }
     //endregion
-
     //region --- helper methods ---
+
+    private void setGameTimeTo5Seconds() {
+        pom.clickClockBtn();
+        timeSheetPom.typeSeconds("5");
+        timeSheetPom.clickDoneBtn();
+    }
+
     private void startAndRunGame() {
         int counter = 5;
         while (counter > 0) {
             counter--;
-            pom.tapClockTop();
-            pom.tapBottomClock();
+            pom.clickTopClock();
+            pom.clickBottomClock();
         }
     }
 
     private void assertGameIsRestarted() {
         SoftAssert soft = new SoftAssert();
-
         soft.assertEquals(pom.getTopMovesCounterValue(), 0);
         soft.assertEquals(pom.getBottomMovesCounterValue(), 0);
-
         soft.assertEquals(pom.getTopClockTime(), "0:05");
         soft.assertEquals(pom.getBottomClockTime(), "0:05");
-
         soft.assertEquals(pom.getTopTimeSetting(), "0' 5\"");
         soft.assertEquals(pom.getBottomTimeSetting(), "0' 5\"");
-
         soft.assertTrue(pom.isBottomClockEnabled());
         soft.assertTrue(pom.isTopClockEnabled());
-
         soft.assertTrue(pom.isClockBtnEnabled());
         soft.assertFalse(pom.isPpBtnEnabled());
         soft.assertFalse(pom.isRestartBtnEnabled());
-
         soft.assertAll();
     }
     //endregion
