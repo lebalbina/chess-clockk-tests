@@ -1,13 +1,9 @@
 package com.balbina.clockktests;
 
 import com.balbina.clockktests.pom.MainViewPOM;
-import io.appium.java_client.android.appmanagement.AndroidTerminateApplicationOptions;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
 
 public class InitialStateTests extends BaseTest {
 
@@ -16,15 +12,6 @@ public class InitialStateTests extends BaseTest {
     @BeforeMethod
     private void setUp() {
         pom = new MainViewPOM(driver);
-    }
-
-    //TODO extract
-    @AfterMethod
-    private void restart() {
-        driver.terminateApp("com.example.chessclockk",
-                            new AndroidTerminateApplicationOptions().withTimeout(Duration.ofSeconds(0))
-        );
-        driver.activateApp("com.example.chessclockk");
     }
 
     @Test
